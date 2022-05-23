@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 // Models
 use App\Models\CheckUserSession;
 use App\Models\CommonFunctions;
+use App\Models\OptionComponents;
 
 class CommonFunctionController extends Controller
 {
@@ -53,6 +54,45 @@ class CommonFunctionController extends Controller
                 }
             }
             $response = $query_dynamic[0];
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+
+    /**
+     * _getroleGroupOption a new method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function _getroleGroupOption(Request $request)
+    {
+        try {
+            $active = $request->input('active');
+            $etype = $request->input('etype');
+            $company_id = $request->input('company_id');
+            $response = OptionComponents::_getroleGroupOption($active, $etype, $company_id);
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+    /**
+     * _getCompanyOption a new method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function _getCompanyOption(Request $request)
+    {
+        try {
+            $active = $request->input('active');
+            $etype = $request->input('etype');
+            $company_id = $request->input('company_id');
+            $response = OptionComponents::_getCompanyOption($active, $etype, $company_id);
         } catch (\Throwable $th) {
             //throw $th;
             $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());

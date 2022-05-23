@@ -128,11 +128,17 @@
 
 <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
 
+<!-- jquery-validation -->
+<script src="{{ asset('assets/plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery-validation/additional-methods.min.js') }}"></script>
+
 <script src="{{ asset('assets/js/app_modules/shortcut.js') }}"></script>
 
 @if (isset($view_all_js) && (bool) $view_all_js == true)
     <script src="{{ asset('assets/js/app_modules/viewallrecorddata.js') }}"></script>
 @endif
+
+<script src="{{ asset('assets/js/app_modules/OptionComponents.js') }}"></script>
 
 <script src="{{ asset('assets/js/app_modules/general.js') }}"></script>
 

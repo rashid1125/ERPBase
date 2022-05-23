@@ -13,7 +13,7 @@ class CreateRolegroupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rolegroup', function (Blueprint $table) {
+        Schema::create('rolegroups', function (Blueprint $table) {
             $table->bigInteger('rgid')->autoIncrement();
             $table->string('name');
             $table->jsonb('desc');
@@ -29,6 +29,6 @@ class CreateRolegroupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rolegroup');
+        Schema::dropIfExists('rolegroups');
     }
 }

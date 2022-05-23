@@ -55,6 +55,9 @@ try {
 
 
 Route::post('voucher/setupviewall', 'CommonFunctionController@_getQueryDynamicsView');
+
+Route::post('OptionCallComponent/getroleGroupOption', 'CommonFunctionController@_getroleGroupOption');
+Route::post('OptionCallComponent/getCompanyOption', 'CommonFunctionController@_getCompanyOption');
 // All Post Request Write down for clear understanding!.
 
 // Financial Year Route

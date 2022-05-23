@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Rolegroups extends Model
+class Companies extends Model
 {
     use HasFactory;
-    protected $table = 'rolegroups';
+
+    protected $table = 'company';
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'rgid';
+    protected $primaryKey = 'company_id';
     /**
      * Indicates if the model should be timestamped.
      *
@@ -34,8 +35,8 @@ class Rolegroups extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'desc',
-        'isadmin'
+        'company_id',
+        'company_name',
+        'email'
     ];
 }

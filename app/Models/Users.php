@@ -61,9 +61,9 @@ class Users extends Authenticatable
                 $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
                 user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
                 company.img as 'header_img',session_users.session_id as 'session_id',user.send_mail,
-                user.mobile, user.rgid, user.mob_code,rolegroup.desc,company.contact as company_contact
+                user.mobile, user.rgid, user.mob_code,rolegroups.desc,company.contact as company_contact
                 FROM user
-                INNER JOIN rolegroup ON user.rgid = rolegroup.rgid
+                INNER JOIN rolegroups ON user.rgid = rolegroups.rgid
                 INNER JOIN company ON user.company_id = company.company_id
                 lEFT  JOIN session_user as session_users on session_users.uid=user.uid   
                 WHERE user.uname =  '{$username}' AND is_secure='1'";
@@ -310,9 +310,9 @@ class Users extends Authenticatable
                 $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
                 user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
                 company.img as 'header_img',session_users.session_id as 'session_id',
-                user.mobile, user.rgid, user.mob_code,rolegroup.desc,company.contact as company_contact
+                user.mobile, user.rgid, user.mob_code,rolegroups.desc,company.contact as company_contact
                 FROM user
-                INNER JOIN rolegroup ON user.rgid = rolegroup.rgid
+                INNER JOIN rolegroups ON user.rgid = rolegroups.rgid
                 INNER JOIN company ON user.company_id = company.company_id
                 lEFT  JOIN session_user as session_users on session_users.uid=user.uid   
                 WHERE user.uname =  '" . $user_name . "' AND user.uid =  '" . $user_id . "'  ";
@@ -378,9 +378,9 @@ class Users extends Authenticatable
         $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
                 user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
                 company.img as 'header_img',session_users.session_id as 'session_id',
-                user.mobile, user.rgid, user.mob_code,rolegroup.desc,company.contact as company_contact
+                user.mobile, user.rgid, user.mob_code,rolegroups.desc,company.contact as company_contact
                 FROM user
-                INNER JOIN rolegroup ON user.rgid = rolegroup.rgid
+                INNER JOIN rolegroups ON user.rgid = rolegroups.rgid
                 INNER JOIN company ON user.company_id = company.company_id
                 lEFT  JOIN session_user as session_users on session_users.uid=user.uid   
                 WHERE user.uname =  '" . $uname . "' AND user.uid =  '" . $uid . "'  ";

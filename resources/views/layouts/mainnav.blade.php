@@ -40,7 +40,8 @@ use App\Models\AsideBar;
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-compact nav-legacy" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-compact nav-legacy"
+                data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
@@ -73,7 +74,8 @@ use App\Models\AsideBar;
                                                 @if ((int) $SubMainnavModule->is_visible == 1)
                                                     <li class="nav-item">
                                                         <a href="#" class="nav-link">
-                                                            <i class="nav-icon {{ $SubMainnavModule->sub_module_icon }}"></i>
+                                                            <i
+                                                                class="nav-icon {{ $SubMainnavModule->sub_module_icon }}"></i>
                                                             <p>
                                                                 {{ $SubMainnavModule->sub_module_name }}
                                                                 <i class="right fas fa-angle-left"></i>
@@ -83,9 +85,8 @@ use App\Models\AsideBar;
                                                             <?php $AsideBarsData = AsideBar::_getMainnavLinks($MainnavModule->module_id, $SubMainnavModule->sub_module_id); ?>
                                                             @if (count($AsideBarsData) > 0)
                                                                 @foreach ($AsideBarsData as $AsideBarData)
-                                                                
                                                                     @if ((int) $AsideBarData->is_visible == 1)
-                                                                        {{-- voucher links and validate with given rights in rolegroup --}}
+                                                                        {{-- voucher links and validate with given rights in rolegroups --}}
                                                                         @if ($AsideBarData->vr_type == 'vouchers')
                                                                             @if (!empty($AsideBarData->vr_post_method) && getPostingMethod($AsideBarData->vr_post_method))
                                                                                 @if (CommonFunctions::_getValidRoleGroupUserPermissions('vouchers', $AsideBarData->vr_rights))
@@ -118,19 +119,19 @@ use App\Models\AsideBar;
                                                                                 @endif
                                                                             @endif
                                                                         @endif
-                                                                        {{-- end voucher links and validate with given rights in rolegroup --}}
+                                                                        {{-- end voucher links and validate with given rights in rolegroups --}}
 
 
-                                                                        {{-- reports links and validate with given rights in rolegroup --}}
+                                                                        {{-- reports links and validate with given rights in rolegroups --}}
                                                                         @if ($AsideBarData->vr_type == 'reports')
-
                                                                             @if (!empty($AsideBarData->vr_post_method) && getPostingMethod($AsideBarData->vr_post_method))
                                                                                 @if (CommonFunctions::_getValidRoleGroupUserPermissions('reports', $AsideBarData->vr_rights))
                                                                                     <li
                                                                                         class="nav-item report {{ $AsideBarData->vr_rights }}">
                                                                                         <a href="{{ url($AsideBarData->slug) }}"
                                                                                             class="nav-link">
-                                                                                            <i class="fas fa-plus nav-icon"></i>
+                                                                                            <i
+                                                                                                class="fas fa-plus nav-icon"></i>
                                                                                             <p>{{ $AsideBarData->vr_title }}
                                                                                             </p>
                                                                                         </a>
@@ -145,7 +146,8 @@ use App\Models\AsideBar;
                                                                                         class="nav-item report {{ $AsideBarData->vr_rights }}">
                                                                                         <a href="{{ url($AsideBarData->slug) }}"
                                                                                             class="nav-link">
-                                                                                            <i class="fas fa-plus nav-icon"></i>
+                                                                                            <i
+                                                                                                class="fas fa-plus nav-icon"></i>
                                                                                             <p>{{ $AsideBarData->vr_title }}
                                                                                             </p>
                                                                                         </a>
@@ -160,14 +162,16 @@ use App\Models\AsideBar;
                                                                                         class="nav-item report {{ $AsideBarData->vr_rights }}">
                                                                                         <a href="{{ url($AsideBarData->slug) }}"
                                                                                             class="nav-link">
-                                                                                            <i class="fas fa-plus nav-icon"></i>
-                                                                                            <p>{{ $AsideBarData->vr_title }}</p>
+                                                                                            <i
+                                                                                                class="fas fa-plus nav-icon"></i>
+                                                                                            <p>{{ $AsideBarData->vr_title }}
+                                                                                            </p>
                                                                                         </a>
                                                                                     </li>
                                                                                 @endif
                                                                             @endif
                                                                         @endif
-                                                                        {{-- end reports links and validate with given rights in rolegroup --}}
+                                                                        {{-- end reports links and validate with given rights in rolegroups --}}
                                                                     @endif
                                                                 @endforeach
                                                             @endif

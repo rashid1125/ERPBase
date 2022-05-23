@@ -102,7 +102,7 @@ if (!function_exists('_getEtypeNarration')) {
 if (!function_exists('_getVerifyInsertedUpdatedDeletedRights')) {
     function _getVerifyInsertedUpdatedDeletedRights($voucherRights, $givenRights, $message = "", $flag = false)
     {
-        $RoleGroupByUserId = Rolegroups::find(Session::get('rgid')); // get data from rolegroup with user id
+        $RoleGroupByUserId = Rolegroups::find(Session::get('rgid')); // get data from rolegroups with user id
         $desc = $RoleGroupByUserId['desc'];
 
         // parse json into array
