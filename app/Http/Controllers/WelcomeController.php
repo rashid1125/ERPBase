@@ -74,7 +74,7 @@ class WelcomeController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }
@@ -115,7 +115,7 @@ class WelcomeController extends Controller
             $response = Users::_getValidateUserOTPCode($otpcode, $user_id, $user_name, $financialyear_id, $user_agent, $csrf_token);
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }

@@ -73,7 +73,7 @@ class FinancialyearController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }
@@ -91,7 +91,7 @@ class FinancialyearController extends Controller
             CommonFunctions::_getLogActivityDetail($vrnoa, 'financialyearvoucher', $response, 'Feched');
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }

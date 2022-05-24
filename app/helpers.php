@@ -73,7 +73,7 @@ if (!function_exists('_getInsertedUpdatedDeletedRights')) {
             } else {
                 $response = _getVerifyInsertedUpdatedDeletedRights($voucherRightsEtype[0]->voucherrights, 'insert');
             }
-        } else $response = CommonFunctions::getReturnResponse(false, 'No rights to this voucher...!!!', null);
+        } else $response = CommonFunctions::_getReturnResponse(false, 'No rights to this voucher...!!!', null);
         return $response;
     }
 }
@@ -129,7 +129,7 @@ if (!function_exists('_getVerifyInsertedUpdatedDeletedRights')) {
         }
 
         if (((bool)($flag))) {
-            return CommonFunctions::getReturnResponse(false, $message, null);
-        } else return CommonFunctions::getReturnResponse(true, 'User has rights for work activities...!!!', null);
+            return CommonFunctions::_getReturnResponse(false, $message, null);
+        } else return CommonFunctions::_getReturnResponse(true, 'User has rights for work activities...!!!', null);
     }
 }

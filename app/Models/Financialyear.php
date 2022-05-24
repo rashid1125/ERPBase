@@ -52,8 +52,8 @@ class Financialyear extends Model
     {
         $Financialyear = Financialyear::where(array('financialyear_name' => $FinancialyearObject['financialyear_name']))->where('financialyear_id', '<>', $FinancialyearObject['financialyear_id'])->get();
         if (count($Financialyear) > 0)
-            return CommonFunctions::getReturnResponse(true, 'Financial Year is already saved', $Financialyear);
-        else return CommonFunctions::getReturnResponse(false, 'Financial Year is not already saved', null);
+            return CommonFunctions::_getReturnResponse(true, 'Financial Year is already saved', $Financialyear);
+        else return CommonFunctions::_getReturnResponse(false, 'Financial Year is not already saved', null);
     }
 
     /**
@@ -72,10 +72,10 @@ class Financialyear extends Model
         $Financialyear = Financialyear::where(array('financialyear_name' => $FinancialyearObject['financialyear_name']))->where('financialyear_id', '<>', '')->get();
         if (count($Financialyear) > 0) {
             DB::table('financialyear')->where('financialyear_id', $Financialyear[0]['financialyear_id'])->update($FinancialyearObject);
-            return CommonFunctions::getReturnResponse(true, 'Financial Year Updated Successfuly', $Financialyear);
+            return CommonFunctions::_getReturnResponse(true, 'Financial Year Updated Successfuly', $Financialyear);
         } else {
             DB::table('financialyear')->insertGetId($FinancialyearObject);
-            return CommonFunctions::getReturnResponse(true, 'Financial Year Saved Successfuly', $Financialyear);
+            return CommonFunctions::_getReturnResponse(true, 'Financial Year Saved Successfuly', $Financialyear);
         }
     }
     /**
@@ -87,7 +87,7 @@ class Financialyear extends Model
     {
         $Financialyear = Financialyear::find($vrnoa);
         if (count((array)($Financialyear)) > 0)
-            return CommonFunctions::getReturnResponse(true, 'Financial Year Data', $Financialyear);
-        else return CommonFunctions::getReturnResponse(false, 'No Data Found', null);
+            return CommonFunctions::_getReturnResponse(true, 'Financial Year Data', $Financialyear);
+        else return CommonFunctions::_getReturnResponse(false, 'No Data Found', null);
     }
 }

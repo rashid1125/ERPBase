@@ -143,7 +143,7 @@ class Users extends Authenticatable
                         $responsedata[0]['uid'] = $result[0]['uid'];
                         $responsedata[0]['uname'] = $result[0]['uname'];
                         $responsedata[0]['otp'] = $Otp_Array['otp_code'];
-                        return CommonFunctions::getReturnResponse(true, 'New login code has been sent on your Email', $responsedata);
+                        return CommonFunctions::_getReturnResponse(true, 'New login code has been sent on your Email', $responsedata);
                     }
                 }
             }
@@ -191,7 +191,7 @@ class Users extends Authenticatable
 
         $validdateUserExist = Users::where(array('uname' => $username, 'is_secure' => '1'))->get();
         if (count($validdateUserExist) ==  0)
-            return CommonFunctions::getReturnResponse(false, 'User Does Not Exist or Is Not Active', null);
+            return CommonFunctions::_getReturnResponse(false, 'User Does Not Exist or Is Not Active', null);
 
         $counter = $validdateUserExist[0]['failedattempts'];
 
@@ -217,20 +217,20 @@ class Users extends Authenticatable
                             $query2 = DB::select("SELECT * FROM  user   WHERE user.uid='" . $rows['uid'] . "' AND is_secure='1' ");
                             if (count($query2) > 0) {
                                 $data = CommonFunctions::row_array($query2);
-                                $response = CommonFunctions::getReturnResponse(true, 'Welcome To Dashboard', $data);
+                                $response = CommonFunctions::_getReturnResponse(true, 'Welcome To Dashboard', $data);
                             } else {
-                                $response = CommonFunctions::getReturnResponse(false, 'User does not exist', null);
+                                $response = CommonFunctions::_getReturnResponse(false, 'User does not exist', null);
                             }
                         } else {
-                            $response = CommonFunctions::getReturnResponse(false, 'E-Mail address does not exist', null);
+                            $response = CommonFunctions::_getReturnResponse(false, 'E-Mail address does not exist', null);
                         }
                     } else {
 
-                        $response = CommonFunctions::getReturnResponse(false, 'Invalid username or password entered', null);
+                        $response = CommonFunctions::_getReturnResponse(false, 'Invalid username or password entered', null);
                         // when user password is wrong and update failedattempts in user table
                         $response['remaining_attempts'] = $number - $counter;
                         if ($response['remaining_attempts'] < 3) {
-                            $response = CommonFunctions::getReturnResponse(false, "Remaing Attempts: <span class='badge badge-warning' style='font-size:14px'>{$response['remaining_attempts']}</span>. Your account will be blocked after wrong remaining attempts.", null);
+                            $response = CommonFunctions::_getReturnResponse(false, "Remaing Attempts: <span class='badge badge-warning' style='font-size:14px'>{$response['remaining_attempts']}</span>. Your account will be blocked after wrong remaining attempts.", null);
                         }
                         DB::table('user')->where('uname', $username)->increment('failedattempts', 1);
                     }
@@ -241,7 +241,7 @@ class Users extends Authenticatable
             $emailResult = CommonFunctions::row_array($emailResult);
             $email = $emailResult['email'];
             Users::send_mail_blockuser($email, 'User Block', $username);
-            $response = CommonFunctions::getReturnResponse(false, 'User Has Been Blocked. Please Contact Administrator', null);
+            $response = CommonFunctions::_getReturnResponse(false, 'User Has Been Blocked. Please Contact Administrator', null);
         }
         return $response;
     }
@@ -260,10 +260,10 @@ class Users extends Authenticatable
         $responseUser = Users::where(array('uname' => $username))->get();
 
         if ((int) $responseUser[0]['user_can_login_fn'] == 1) {
-            return CommonFunctions::getReturnResponse(true, 'User Can Login in multi financial year...!!!', $response);
+            return CommonFunctions::_getReturnResponse(true, 'User Can Login in multi financial year...!!!', $response);
         } else if (((int)$response[0]['fn_id'] && (int)$financialyear)) {
-            return CommonFunctions::getReturnResponse(true, 'User Can Login in multi financial year...!!!', $response);
-        } else return CommonFunctions::getReturnResponse(false, 'You are not allowed to login into this selected financial year...!!!', null);
+            return CommonFunctions::_getReturnResponse(true, 'User Can Login in multi financial year...!!!', $response);
+        } else return CommonFunctions::_getReturnResponse(false, 'You are not allowed to login into this selected financial year...!!!', null);
     }
 
     public static function _getValidateUserOTPCode($otpcode, $user_id, $user_name, $setting_fn_id, $user_agent, $csrf_token)
@@ -279,7 +279,7 @@ class Users extends Authenticatable
             if ((int) $otpData[0]['otp_code_attempt'] > 2) {
                 DB::table('otp')->where('otp_token', $csrf_token)->update(array('otp_expired' => 1));
                 Session::put('last_activity', -1);
-                return CommonFunctions::getReturnResponse(false, 'Your one time pin is expired', null, null, 'login');
+                return CommonFunctions::_getReturnResponse(false, 'Your one time pin is expired', null, null, 'login');
             }
         }
 
@@ -305,7 +305,7 @@ class Users extends Authenticatable
             }
             if ((int) $result[0]['otp_expired'] == 1) {
                 DB::table('otp')->where('otp_token', $csrf_token)->increment('otp_code_attempt', 1);
-                return CommonFunctions::getReturnResponse(false, 'Your one time pin is expired', null);
+                return CommonFunctions::_getReturnResponse(false, 'Your one time pin is expired', null);
             } else if ($result[0]['otp_uid'] == $user_id && $result[0]['otp_uname'] == $user_name) {
                 $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
                 user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
@@ -345,12 +345,12 @@ class Users extends Authenticatable
                     $_SESSION['before_session_csrf_token'] =  '';
 
                     DB::table('otp')->where('otp_code', $otpcode)->update(array('otp_expired' => '1'));
-                    return CommonFunctions::getReturnResponse(true, 'Welcome To Dashboard', $result);
+                    return CommonFunctions::_getReturnResponse(true, 'Welcome To Dashboard', $result);
                 }
             }
         } else {
             DB::table('otp')->where('otp_token', $csrf_token)->increment('otp_code_attempt', 1);
-            return CommonFunctions::getReturnResponse(false, 'Your one time pin is invalid', null);
+            return CommonFunctions::_getReturnResponse(false, 'Your one time pin is invalid', null);
         }
     }
     public static function Send_Mail_OtpCode($otp_time, $uname, $to, $subject, $message)
@@ -423,7 +423,7 @@ class Users extends Authenticatable
                 $_SESSION['before_session_username'] =  $result[0]['uname'];
                 // checking user ip location set or not
                 DB::table('otp')->insert($Otp_Array);
-                return CommonFunctions::getReturnResponse(true, 'New login code has been sent on your Email', $result);
+                return CommonFunctions::_getReturnResponse(true, 'New login code has been sent on your Email', $result);
             }
         }
     }

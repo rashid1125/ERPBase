@@ -10,8 +10,6 @@
 |
 */
 
-use App\Http\Controllers\FinancialyearController;
-use App\Models\Financialyear;
 use Illuminate\Support\Facades\Route;
 use App\Models\RouteDynamics;
 
@@ -33,10 +31,9 @@ Route::get('verificationemail', 'WelcomeController@getLoadVerificationEMail');
 
 Route::post('getValidateUserOTPCode', 'WelcomeController@getValidateUserOTPCode');
 
-Route::post('user/logout', 'UserController@logOut');
+Route::get('user/logout', 'UserController@logOut');
 
 try {
-
     $RouteDynamics =  RouteDynamics::all();
     if (count($RouteDynamics) > 0)
         foreach ($RouteDynamics as $key => $routedynamic) {
@@ -46,19 +43,8 @@ try {
                 Route::post($routedynamic['slug'], $routedynamic['controller_name'] . '@' . $routedynamic['function_name']);
         }
 } catch (\Throwable $th) {
-    //throw $th;
-    echo '*************************************' . PHP_EOL;
-    echo 'Error fetching database pages: ' . PHP_EOL;
     echo $th->getMessage() . PHP_EOL;
-    echo '*************************************' . PHP_EOL;
 }
-
-
-Route::post('voucher/setupviewall', 'CommonFunctionController@_getQueryDynamicsView');
-
-Route::post('OptionCallComponent/getroleGroupOption', 'CommonFunctionController@_getroleGroupOption');
-Route::post('OptionCallComponent/getCompanyOption', 'CommonFunctionController@_getCompanyOption');
-// All Post Request Write down for clear understanding!.
 
 // Financial Year Route
 Route::post('financialyear/financialyearsave', 'FinancialyearController@FinancialyearSave');

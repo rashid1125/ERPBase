@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Request;
 
 class CommonFunctions extends Model
 {
+    /**
+     * convertObjectToArray function
+     *
+     * @param object $object
+     * @return array
+     */
     public static function convertObjectToArray($object)
     {
         $array = array();
@@ -70,7 +76,12 @@ class CommonFunctions extends Model
         return $ReturnFlag;
     }
 
-
+    /**
+     * _getEtypeNarration function
+     *
+     * @param string $etype
+     * @return array|bool
+     */
     public static function _getEtypeNarration()
     {
         $etype = isset($_POST['etype'])  ? $_POST['etype'] : $_GET['etype'];
@@ -82,36 +93,41 @@ class CommonFunctions extends Model
         }
     }
 
-    public static function checkValueIsNullOffObject($object)
-    {
-        $array = [];
-        foreach ($object  as $key => $value) {
-            $array[$key] =  (!$value || $value == 'null') ? null : $value;
-        }
-        return $array;
-    }
+    /**
+     * row_array function
+     *
+     * @param string $object
+     * @return array zero index
+     */
     public static function row_array($object)
     {
         $object = CommonFunctions::convertObjectToArray($object);
         return $object[0];
     }
+
+    /**
+     * result_array function
+     *
+     * @param string $object
+     * @return array
+     */
     public static function result_array($object)
     {
         $object = CommonFunctions::convertObjectToArray($object);
         return $object;
     }
 
-    public static function returnResponse($status, $message, $data = null, $error = "")
-    {
-        $response = array();
-        $response['status'] = $status;
-        $response['message'] = $message;
-        $response['data'] = $data;
-        $response['error'] = $error;
-        return $response;
-    }
-
-    public static function getReturnResponse($status, $message, $data = null, $error = "", $locationReload = null)
+    /**
+     * _getReturnResponse function
+     *
+     * @param bool $status
+     * @param string $message
+     * @param string|array|null $message
+     * @param string|array $error
+     * @param string $locationReload
+     * @return array
+     */
+    public static function _getReturnResponse($status, $message, $data = null, $error = "", $locationReload = null)
     {
         $response = array();
         $response['status'] = $status;
@@ -120,31 +136,6 @@ class CommonFunctions extends Model
         $response['error'] = $error;
         $response['location'] = $locationReload;
         return $response;
-    }
-
-    public static function array_column(array $input, $columnKey, $indexKey = null)
-    {
-        $array = array();
-        foreach ($input as $value) {
-            if (!array_key_exists($columnKey, $value)) {
-                trigger_error("Key \"$columnKey\" does not exist in array");
-                return false;
-            }
-            if (is_null($indexKey)) {
-                $array[] = $value[$columnKey];
-            } else {
-                if (!array_key_exists($indexKey, $value)) {
-                    trigger_error("Key \"$indexKey\" does not exist in array");
-                    return false;
-                }
-                if (!is_scalar($value[$indexKey])) {
-                    trigger_error("Key \"$indexKey\" does not contain scalar value");
-                    return false;
-                }
-                $array[$value[$indexKey]] = $value[$columnKey];
-            }
-        }
-        return $array;
     }
 
     public static function checkMsgByEtypeAndVoucherType($etype, $voucher_type_hidden)
@@ -283,20 +274,38 @@ class CommonFunctions extends Model
         $var['uid'] = (Session::get('uid')) ? Session::get('uid') : Request::get('uid');
         DB::table('user_log_activity')->insertGetId($var);
     }
+
+    /**
+     * _getViewAllFromQueryBaseData function
+     *
+     * @param string $etype
+     * @param integer $active
+     * @return array
+     */
     public static function _getViewAllFromQueryBaseData($etype, $active)
     {
         $data = DB::table('query_dynamics')->where('etype', $etype)->get();
         return  $data;
     }
+
+    /**
+     * _getQueryDynamicsView function
+     *
+     * @param string $query_dynamics_table_name
+     * @param string $query_dynamics_column
+     * @param string $query_dynamics_join
+     * @param string $query_dynamics_where
+     * @return array
+     */
     public static function _getQueryDynamicsView($query_dynamics_table_name, $query_dynamics_column, $query_dynamics_join, $query_dynamics_where)
     {
         $sql  = "SELECT {$query_dynamics_column} FROM {$query_dynamics_table_name} {$query_dynamics_join} WHERE 1=1 {$query_dynamics_where}";
         $query = DB::select($sql);
         if (count($query) > 0) {
             $result = CommonFunctions::result_array($query);
-            return CommonFunctions::getReturnResponse(true, 'Wait data is loading', $result);
+            return CommonFunctions::_getReturnResponse(true, 'Wait data is loading', $result);
         } else {
-            return CommonFunctions::getReturnResponse(false, 'No Data Found', null);
+            return CommonFunctions::_getReturnResponse(false, 'No Data Found', null);
         }
     }
 }

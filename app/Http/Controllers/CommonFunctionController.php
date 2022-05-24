@@ -56,7 +56,7 @@ class CommonFunctionController extends Controller
             $response = $query_dynamic[0];
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }
@@ -76,7 +76,7 @@ class CommonFunctionController extends Controller
             $response = OptionComponents::_getroleGroupOption($active, $etype, $company_id);
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }
@@ -95,7 +95,68 @@ class CommonFunctionController extends Controller
             $response = OptionComponents::_getCompanyOption($active, $etype, $company_id);
         } catch (\Throwable $th) {
             //throw $th;
-            $response = CommonFunctions::getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+
+    /**
+     * _getFinancialYearOption a new method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function _getFinancialYearOption(Request $request)
+    {
+        try {
+            $active = $request->input('active');
+            $etype = $request->input('etype');
+            $company_id = $request->input('company_id');
+            $multiple = $request->input('multiple');
+            $response = OptionComponents::_getFinancialYearOption($multiple, $active, $etype, $company_id);
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+    /**
+     * _getLevel3Option a new method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function _getLevel3Option(Request $request)
+    {
+        try {
+            $active = $request->input('active');
+            $etype = $request->input('etype');
+            $company_id = $request->input('company_id');
+            $multiple = $request->input('multiple');
+            $response = OptionComponents::_getLevel3Option($multiple, $active, $etype, $company_id);
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+    /**
+     * _getUserOption a new method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function _getUserOption(Request $request)
+    {
+        try {
+            $active = $request->input('active');
+            $etype = $request->input('etype');
+            $company_id = $request->input('company_id');
+            $multiple = $request->input('multiple');
+            $response = OptionComponents::_getUserOption($multiple, $active, $etype, $company_id);
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
         }
         return json_encode($response);
     }

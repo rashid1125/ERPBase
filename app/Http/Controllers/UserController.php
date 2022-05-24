@@ -77,6 +77,41 @@ class UserController extends Controller
         $data['footer'] = View::make('layouts.footer', $data);
         return View::make('layouts.default', $data);
     }
+
+
+    /**
+     * UserSave a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function UserSave(Request $request)
+    {
+        try {
+            $response = _getInsertedUpdatedDeletedRights('voucher_type_hidden'); // return response ture or false voucher rights
+            if ((bool)$response['status'] == true && $response['data'] == null) {
+                // Users::$primaryKey;
+                $FinancialyearObject = json_decode($request->input('obj'), true);
+                $voucher_type_hidden = $request->input('voucher_type_hidden');
+
+                $response = Financialyear::IsAlreadyFinancialyearSaved($FinancialyearObject);
+
+                if ($voucher_type_hidden === 'new') {
+                    $FinancialyearObject['financialyear_id']  = Financialyear::max('financialyear_id') + 1;
+                }
+
+                if ((bool)$response['status'] == false && $response['data'] == null) {
+                    $response = Financialyear::FinancialyearSave($FinancialyearObject);
+                    CommonFunctions::_getLogActivityDetail($FinancialyearObject['financialyear_id'], 'financialyearvoucher', $FinancialyearObject, $voucher_type_hidden);
+                }
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+
     /**
      * logOut function
      * User logout and flash session
