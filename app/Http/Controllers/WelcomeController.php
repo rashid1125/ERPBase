@@ -8,12 +8,12 @@ use Redirect;
 use App\Models\SettingConfigurations;
 use App\Models\Users;
 use App\Models\Financialyear;
-use app\Models\Otp;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as Input;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class WelcomeController extends Controller
 {

@@ -46,6 +46,14 @@ try {
     echo $th->getMessage() . PHP_EOL;
 }
 
+Route::get('/reset-password/{token}', 'ForgotPasswordController@showResetPasswordForm')->name('password.reset');
+Route::post('reset-password', 'ForgotPasswordController@submitResetPasswordForm')->name('password.update');
+
 // Financial Year Route
 Route::post('financialyear/financialyearsave', 'FinancialyearController@FinancialyearSave');
 Route::post('financialyear/getVoucher', 'FinancialyearController@_getVoucher');
+
+// User Saveed
+Route::post('user/usersave', 'UserController@userSave');
+Route::post('user/update', 'UserController@userUpdate');
+Route::post('user/getVoucher', 'UserController@_getVoucher');

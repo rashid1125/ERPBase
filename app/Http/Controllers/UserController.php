@@ -4,23 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
+
+use Carbon\Carbon;
 
 // Models
 use App\Models\CheckUserSession;
 use App\Models\SettingConfigurations;
 use App\Models\CommonFunctions;
-use App\Models\Financialyear;
-use App\Models\Rolegroups;
 use App\Models\Users;
-
-
-
-use Redirect;
 
 class UserController extends Controller
 {
@@ -80,31 +80,154 @@ class UserController extends Controller
 
 
     /**
-     * UserSave a new user.
+     * userSave a new user.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function UserSave(Request $request)
+    public function userSave(Request $request)
     {
         try {
+
+            $_POST['etype'] = 'uservoucher';  // this is etype used  for rigths
+            $_POST['voucher_type_hidden'] = 'new'; // this is voucher_type_hidden used  for rigths
+
+            $response = _getInsertedUpdatedDeletedRights('voucher_type_hidden'); // return response ture or false voucher rights
+
+            if ((bool)$response['status'] == true && $response['data'] == null) {
+                /**
+                 * creating an object to save user data object into the user table.
+                 */
+
+                $requestUser = new Users();
+                $requestUser->date = $request['date'];
+                $requestUser->uname = $request['uname'];
+                $requestUser->fullname = $request['fullname'];
+                $requestUser->email = $request['email'];
+                $requestUser->mobile = $request['mobile'];
+                $requestUser->rgid = $request['rgid'];
+                $requestUser->company_id = $request['company_id'];
+                $requestUser->user_can_login_fn = $request['user_can_login_fn'];
+                $requestUser->level3_id = $request['level3_id'];
+                $requestUser->is_secure = $request['is_secure'];
+                $requestUser->report_to_user = $request['report_to_user'];
+                $requestUser->uuid = ($request['uid']) ? $request['uid'] : Session::get('uid');
+
+                // Form Validation
+                $validator = Validator::make($request->all(), Users::Rules($request['uname']), Users::RulesMessage());
+
+                $response_error = [];
+
+                if ($validator->fails()) {
+                    foreach ($validator->errors()->all() as $key => $error) :
+                        $response_error[$key] = $error . '<br />';
+
+                    endforeach;
+                    $response = CommonFunctions::_getReturnResponse(false, str_replace(',', '', $response_error), null);
+                }
+
+                if ($request->hasFile('photo')) {
+                    $photo = $request->file('photo')->getClientOriginalName();
+                    $destination = base_path() . '/assets/upload_img/user';
+                    $request->file('photo')->move($destination, $photo);
+                    $requestUser->photo = $request['photo'];
+                }
+
+                if (!($validator->fails())) {
+                    $status = Password::sendResetLink($request->only('email'));
+                    $status === Password::RESET_LINK_SENT ? $status : '';
+                    $requestUser->save();
+                    $response = CommonFunctions::_getReturnResponse(true, 'User saved successfully', $_POST);
+                }
+
+                CommonFunctions::_getLogActivityDetail($requestUser['uid'], $_POST['etype'], $requestUser, $_POST['voucher_type_hidden']);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+    /**
+     * userUpdate a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function userUpdate(Request $request)
+    {
+        try {
+
+            $_POST['etype'] = 'uservoucher';  // this is etype used  for rigths
+            $_POST['voucher_type_hidden'] = 'edit'; // this is voucher_type_hidden used  for rigths
             $response = _getInsertedUpdatedDeletedRights('voucher_type_hidden'); // return response ture or false voucher rights
             if ((bool)$response['status'] == true && $response['data'] == null) {
-                // Users::$primaryKey;
-                $FinancialyearObject = json_decode($request->input('obj'), true);
-                $voucher_type_hidden = $request->input('voucher_type_hidden');
+                /**
+                 * creating an object to save user data object into the user table.
+                 */
 
-                $response = Financialyear::IsAlreadyFinancialyearSaved($FinancialyearObject);
+                $requestUser = new Users();
+                $requestUser->date = $request['date'];
+                $requestUser->uname = $request['uname'];
+                $requestUser->fullname = $request['fullname'];
+                $requestUser->email = $request['email'];
+                $requestUser->mobile = $request['mobile'];
+                $requestUser->rgid = $request['rgid'];
+                $requestUser->company_id = $request['company_id'];
+                $requestUser->user_can_login_fn = $request['user_can_login_fn'];
+                $requestUser->level3_id = $request['level3_id'];
+                $requestUser->is_secure = $request['is_secure'];
+                $requestUser->report_to_user = $request['report_to_user'];
+                $requestUser->uuid = ($request['uid']) ? $request['uid'] : Session::get('uid');
 
-                if ($voucher_type_hidden === 'new') {
-                    $FinancialyearObject['financialyear_id']  = Financialyear::max('financialyear_id') + 1;
+                // Form Validation
+                $validator = Validator::make($request->all(), Users::Rules($request['uid']), Users::RulesMessage());
+
+                $response_error = [];
+
+                if ($validator->fails()) {
+                    foreach ($validator->errors()->all() as $key => $error) :
+                        $response_error[$key] = $error . '<br />';
+
+                    endforeach;
+                    $response = CommonFunctions::_getReturnResponse(false, str_replace(',', '', $response_error), null);
                 }
 
-                if ((bool)$response['status'] == false && $response['data'] == null) {
-                    $response = Financialyear::FinancialyearSave($FinancialyearObject);
-                    CommonFunctions::_getLogActivityDetail($FinancialyearObject['financialyear_id'], 'financialyearvoucher', $FinancialyearObject, $voucher_type_hidden);
+                if ($request->hasFile('photo')) {
+                    $photo = $request->file('photo')->getClientOriginalName();
+                    $destination = base_path() . '/assets/upload_img/user';
+                    $request->file('photo')->move($destination, $photo);
+                    $requestUser->photo = $request['photo'];
                 }
+
+                if (!($validator->fails())) {
+                    $requestUser->exists = true;
+                    $requestUser->uid = $request['uid'];
+                    $requestUser->save();
+                    $response = CommonFunctions::_getReturnResponse(true, 'User update successfully', $_POST);
+                }
+
+                CommonFunctions::_getLogActivityDetail($requestUser['uid'], $_POST['etype'], $requestUser, $_POST['voucher_type_hidden']);
             }
+        } catch (\Throwable $th) {
+            //throw $th;
+            $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());
+        }
+        return json_encode($response);
+    }
+
+    /**
+     * _getVoucher a new user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function _getVoucher(Request $request)
+    {
+        try {
+            $vrnoa = $request->input('vrnoa');
+            $response = Users::_getVoucher($vrnoa);
+            CommonFunctions::_getLogActivityDetail($vrnoa, 'uservoucher', $response, 'Feched');
         } catch (\Throwable $th) {
             //throw $th;
             $response = CommonFunctions::_getReturnResponse(false, 'An internal error occured while completing request. Please try again.', null, $th->getMessage());

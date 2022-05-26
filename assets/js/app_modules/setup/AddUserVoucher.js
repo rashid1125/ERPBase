@@ -51,10 +51,10 @@ var UserVoucher = function () {
     };
 
     // saves the data into the database
-    const save = (obj) => {
+    const save = (obj, url ="/user/usersave") => {
         general.disableSave();
         $.ajax({
-            url: base_url + '/user/usersave',
+            url: base_url + url,
             type: 'POST',
             data: obj,
             processData: false,
@@ -74,24 +74,44 @@ var UserVoucher = function () {
         });
     };
     const _getResetFields = () => {
-        $('#vouchertypehidden').val('new');
-        $('.save-elem').each(function (ind, elem) {
-            if ($(this).prop('type') === 'radio' || $(this).prop('type') === 'checkbox') {
+        $('.reset-elem').each(function (ind, elem) {
+            console.log($(this).attr('aria-invalid'));
+            if ($(this).hasClass('select2')) {
+                $(this).val('');
+                $(this).trigger('change');
+            } else if ($(this).prop('type') === 'radio' || $(this).prop('type') === 'checkbox') {
                 return true;
             } else if ($(this).hasClass('date-reset')) {
                 $(this).datepicker('update', new Date());
+            } else if ($(this).hasClass('toggle-button')) {
+                $(this).bootstrapToggle('on');
+            } else if ($(this).hasClass('not-reset')) {
+                return false;
+            } else if (($(this).attr('aria-invalid'))) {
+                $(this).removeClass('is-invalid');
+                $(this).removeClass('is-valid');
+                $(this).attr('aria-invalid', false);
+                $(this).val('').trigger('liszt:updated');
+                const element_id = $(this).attr('id') + '-error';
+                $('#' + element_id).remove();
+            } else if (!($(this).attr('aria-invalid'))) {
+                $(this).removeClass('is-invalid');
+                $(this).removeClass('is-valid');
+                $(this).attr('aria-invalid', false);
+                $(this).val('').trigger('liszt:updated');
+                const element_id = $(this).attr('id') + '-error';
+                $('#' + element_id).remove();
             } else {
                 $(this).val('').trigger('liszt:updated');
-                $('#user_dropdwon').val('').trigger('liszt:updated');
             }
         });
-        // _getAllRecordData('financialyearvoucher');
+        $('#txtUpdateOrInsert').text('Add New');
     };
 
     const getVoucher = (vrnoa) => {
         $.ajax({
             type: "POST",
-            url: base_url + '/financialyear/getVoucher',
+            url: base_url + '/user/getVoucher',
             data: { 'vrnoa': vrnoa },
             dataType: "JSON",
             success: function (response) {
@@ -112,7 +132,25 @@ var UserVoucher = function () {
         $('.save-elem').each(function (ind, elem) {
             var col = $(this).attr('name');
             var name = $(this).prop('name');
-            if ($(this).hasClass('bs_switch')) {
+            if ($(this).hasClass('select2')) {
+                if ($(this).prop("multiple")) {
+                    data[col] = getIfNull(data[col], 0);
+                    if (data[col] !== "") {
+                        $(this).val(data[col].split(","));
+                        $(this).trigger('change');
+                    }
+                }
+                else {
+                    $(this).val(data[col]).trigger('change');
+                }
+            } else if ($(this).hasClass('upload_photo')) {
+                if (data[col] !== "") {
+                    $('#itemImageDisplay').attr('src', base_url + '/assets/upload_img/user/' + data[col]);
+                } else {
+                    $('#itemImageDisplay').attr('src', $('#url').val());
+                }
+            }
+            else if ($(this).hasClass('bs_switch')) {
                 $(this).bootstrapSwitch('state', (data[col] === "true") ? true : false);
             } else if ($(this).hasClass('datepicker')) {
                 var id = $(this).attr('id');
@@ -126,6 +164,7 @@ var UserVoucher = function () {
                 $('#user_dropdwon').val(data.uid).trigger('liszt:updated');
             }
         });
+        $('#txtUpdateOrInsert').text('Update User');
     };
     return {
 
@@ -139,6 +178,7 @@ var UserVoucher = function () {
                 width: 'element',
                 minimumResultsForSearch: Infinity
             });
+            $('#txtUpdateOrInsert').text('Add New');
         },
         bindUI: function () {
             var self = this;
@@ -181,10 +221,10 @@ var UserVoucher = function () {
             });
 
             // when edit button is clicked inside the table view
-            $("body").on('click', '.btn-edit-financialyearvoucher', function (e) {
+            $("body").on('click', '.btn-edit-uservoucher', function (e) {
                 e.preventDefault();
                 getVoucher($(this).data('vrnoa_hide'));		// get the class detail by id
-                $('a[href="#AddFinancialYear"]').trigger('click');
+                $('a[href="#AddUser"]').trigger('click');
             });
             $('#txtViewAllQuery').on('click', function (e) {
                 getAllRecordData('uservoucher');
@@ -229,66 +269,11 @@ var UserVoucher = function () {
                     userVoucherObject.photo = '1';
                 }
             });
-            $(document).on('keyup', 'input[id$="txtUserPassword"]', function (e) {
-                var pass = $(this).val();
-                var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                $('#txtpassInfo').show();
-                if ($('#txtlength').hasClass('valid') && $('#txtcapital').hasClass('valid') && $('#txtletter').hasClass('valid') && $('#txtnumber').hasClass('valid') && $('#txtspecialcharacter').hasClass('valid')) {
-                    $('#txtpassInfo').hide();
-                }
-                if (pass.length < 8) {
-                    $('#txtlength').removeClass('valid').addClass('invalid');
-                } else {
-                    $('#txtlength').removeClass('invalid').addClass('valid');
-                }
-
-                if (pass.match(/[a-z]/)) {
-                    $('#txtletter').removeClass('invalid').addClass('valid');
-                } else {
-                    $('#txtletter').removeClass('valid').addClass('invalid');
-                }
-
-                if (pass.match(/[A-Z]/)) {
-                    $('#txtcapital').removeClass('invalid').addClass('valid');
-                } else {
-                    $('#txtcapital').removeClass('valid').addClass('invalid');
-                }
-
-                if (pass.match(/\d/)) {
-                    $('#txtnumber').removeClass('invalid').addClass('valid');
-                } else {
-                    $('#txtnumber').removeClass('valid').addClass('invalid');
-                }
-                if (format.test(pass)) {
-                    $('#txtspecialcharacter').removeClass('invalid').addClass('valid');
-                } else {
-                    $('#txtspecialcharacter').removeClass('valid').addClass('invalid');
-                }
-            }).focusout(function () {  
-                $('#txtpassInfo').hide();
-            });
 
             $('#txtUserForm').validate({
                 rules: {
                     uname: {
                         required: true,
-                    },
-                    pass: {
-                        required: true,
-                        uppercaseLetterFlag: true,
-                        lowercaseLetterFlag: true,
-                        specialCharacterFlag: true,
-                        Numberdigits: true,
-                        minlength: 8
-                    },
-                    confrimpass: {
-                        required: true,
-                        uppercaseLetterFlag: true,
-                        lowercaseLetterFlag: true,
-                        specialCharacterFlag: true,
-                        Numberdigits: true,
-                        equalTo: "#txtUserPassword",
-                        minlength: 8
                     },
                     fullname: {
                         required: true,
@@ -307,9 +292,6 @@ var UserVoucher = function () {
                 messages: {
                     uname: {
                         required: "Please enter username",
-                    },
-                    confrimpass:{
-                        required: "Please enter full name",
                     },
                     fullname: {
                         required: "Please enter full name",
@@ -348,7 +330,8 @@ var UserVoucher = function () {
             var errors = $("#txtUserForm").valid();	// checks for the empty fields
             var saveObj = _getSaveObject();	// returns the class detail object to save into database
             if (errors) {
-                save(saveObj);
+                if (($.trim($('#txtUpdateOrInsert').text())).toLocaleLowerCase() === 'update user') save(saveObj,'/user/update');
+                else save(saveObj);
             } else {
                 _getAlertMessage('Error!', 'Correct the errors...!!!', 'danger');
             }
@@ -364,11 +347,11 @@ const userVoucherObject = new UserVoucher();
 userVoucherObject.init();
 $(document).ready(function () {
     setTimeout(() => {
-        // OptionComponents._getroleGroupOption('#txtUserRoleGroup');
-        // OptionComponents._getCompanyOption('#txtUserCompany');
-        // OptionComponents._getFinancialYearOption('#txtUserFinancialYear', true);
-        // OptionComponents._getLevel3Option('#txtUserLevel3', true);
-        // OptionComponents._getUserOption('#txtUserReportToAdmin');
+        OptionComponents._getroleGroupOption('#txtUserRoleGroup');
+        OptionComponents._getCompanyOption('#txtUserCompany');
+        OptionComponents._getFinancialYearOption('#txtUserFinancialYear', true);
+        OptionComponents._getLevel3Option('#txtUserLevel3', true);
+        OptionComponents._getUserOption('#txtUserReportToAdmin');
     }, 1000);
 
 });

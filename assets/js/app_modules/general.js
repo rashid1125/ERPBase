@@ -47,6 +47,12 @@ const getFormattedDate = (date, format = null, checkFormat = null) => {
 		dt = moment(date, checkFormat.toUpperCase());
 	return dt.format(format.toUpperCase());
 };
+const getIfNull = function (isJqueryAvailable = 0, isJqueryAvailableValue = "") {
+	if (Object.is(isJqueryAvailable, null) || Object.is(isJqueryAvailable, undefined) || Object.is(isJqueryAvailable, '') || Object.is(isJqueryAvailable, 'NaN'))
+		return (isJqueryAvailableValue) ? isJqueryAvailableValue : '';
+	else
+		return isJqueryAvailable;
+};
 var General = function () {
 	if (!String.prototype.trim) {
 		String.prototype.trim = function () {

@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use function PHPUnit\Framework\returnValue;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Users extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable;
     /**
      * The table associated with the table.
      *
@@ -23,6 +26,66 @@ class Users extends Authenticatable
      * @var string
      */
     protected $primaryKey = 'uid';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'uname',
+        'pass',
+        'fullname',
+        'email',
+        'rgid',
+        'company_id',
+        'is_secure'
+    ];
+
+    public static function Rules($uid)
+    {
+        return [
+            'uname' => array('required', 'unique:user,uname,' . $uid . ',uid'),
+            'fullname' => 'required',
+            'email' => array('required', 'email', 'unique:user,email,' . $uid . ',uid'),
+            'rgid' => 'required',
+            'company_id' => 'required',
+        ];
+    }
+
+    public static function RulesMessage()
+    {
+        return [
+            'uname.required' => 'Please type username',
+            'uname.unique' => 'This user is already saved',
+            'fullname.required' => 'Please type full name',
+            'email.required' => 'Please type E-Mail',
+            'email.unique' => 'This E-Mail is already saved',
+            'rgid.required' => 'Please choose user rights group',
+            'company_id.required' => 'Please choose company',
+        ];
+    }
+    public function Financialyears()
+    {
+        return $this->belongsToMany('user', 'financialyear', 'user_can_login_fn', 'financialyear_id');
+    }
+
+    public function rolegroups()
+    {
+        return $this->belongsToMany('user', 'rolegroups', 'rgid', 'rgid');
+    }
+
+    /**
+     * _getVoucher a new user.
+     *
+     * @param  $vrnoa
+     */
+    public static function _getVoucher(int $vrnoa)
+    {
+        $Financialyear = Users::find($vrnoa);
+        if (count((array)($Financialyear)) > 0)
+            return CommonFunctions::_getReturnResponse(true, 'Financial Year Data', $Financialyear);
+        else return CommonFunctions::_getReturnResponse(false, 'No Data Found', null);
+    }
 
     /**
      * _getAuthentication function
@@ -204,14 +267,8 @@ class Users extends Authenticatable
             if (count($query) > 0) {
                 $result = CommonFunctions::result_array($query);
                 foreach ($result as $rows) {
-                    // Custome Password Encrypt
-                    $oldPass = $rows['pass'];
-                    $splitPassword = explode(':', $oldPass);
-                    $oldPassword = $splitPassword[0];
-                    $oldSalt = $splitPassword[1];
-                    $newEncryptPassword = Users::generatePasswordWithSalt($password, $oldSalt);
                     // verfiy password and user with database username and password
-                    if ($newEncryptPassword == $oldPassword && $username === $rows['uname']) {
+                    if (hash::check($password, $rows['pass']) && $username === $rows['uname']) {
                         // verfiy email with database email
                         if ((!empty($rows['email']))) {
                             $query2 = DB::select("SELECT * FROM  user   WHERE user.uid='" . $rows['uid'] . "' AND is_secure='1' ");
