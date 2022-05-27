@@ -7,15 +7,9 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
-
-use Carbon\Carbon;
-
 // Models
 use App\Models\CheckUserSession;
 use App\Models\SettingConfigurations;
@@ -35,9 +29,9 @@ class UserController extends Controller
             return redirect()->intended('/login');
         });
     }
+
     /**
-     * Add New User
-     * Form
+     * index User
      * @return void
      */
     public function index()
@@ -58,6 +52,7 @@ class UserController extends Controller
             return View::make('layouts.default', $data);
         } else return View::make('layouts.page_404');
     }
+
     /**
      * dashboard function
      *
@@ -80,7 +75,7 @@ class UserController extends Controller
 
 
     /**
-     * userSave a new user.
+     * userSave a new method.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -95,6 +90,7 @@ class UserController extends Controller
             $response = _getInsertedUpdatedDeletedRights('voucher_type_hidden'); // return response ture or false voucher rights
 
             if ((bool)$response['status'] == true && $response['data'] == null) {
+
                 /**
                  * creating an object to save user data object into the user table.
                  */
@@ -106,11 +102,11 @@ class UserController extends Controller
                 $requestUser->email = $request['email'];
                 $requestUser->mobile = $request['mobile'];
                 $requestUser->rgid = $request['rgid'];
-                $requestUser->company_id = $request['company_id'];
                 $requestUser->user_can_login_fn = $request['user_can_login_fn'];
                 $requestUser->level3_id = $request['level3_id'];
-                $requestUser->is_secure = $request['is_secure'];
+                $requestUser->is_secure = ($request['is_secure']) ? $request['is_secure'] : 1;
                 $requestUser->report_to_user = $request['report_to_user'];
+                $requestUser->company_id = ($request['company_id']) ? $request['company_id'] : Session::get('company_id');
                 $requestUser->uuid = ($request['uid']) ? $request['uid'] : Session::get('uid');
 
                 // Form Validation
@@ -134,9 +130,11 @@ class UserController extends Controller
                 }
 
                 if (!($validator->fails())) {
+                    $requestUser->save();
+
                     $status = Password::sendResetLink($request->only('email'));
                     $status === Password::RESET_LINK_SENT ? $status : '';
-                    $requestUser->save();
+
                     $response = CommonFunctions::_getReturnResponse(true, 'User saved successfully', $_POST);
                 }
 

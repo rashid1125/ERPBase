@@ -19,7 +19,7 @@ class CreateOtpsTable extends Migration
             $table->string('otp_token')->nullable();
             $table->integer('otp_code')->nullable();
             $table->integer('otp_expired')->nullable();
-            $table->integer('otp_code_attempt')->nullable();
+            $table->integer('otp_code_attempt')->nullable()->default(0);
             $table->integer('otp_uid')->nullable();
             $table->string('otp_uname')->nullable();
             $table->integer('otp_fn_id')->nullable();

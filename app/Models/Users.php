@@ -47,8 +47,7 @@ class Users extends Authenticatable
             'uname' => array('required', 'unique:user,uname,' . $uid . ',uid'),
             'fullname' => 'required',
             'email' => array('required', 'email', 'unique:user,email,' . $uid . ',uid'),
-            'rgid' => 'required',
-            'company_id' => 'required',
+            'rgid' => 'required'
         ];
     }
 
@@ -60,8 +59,7 @@ class Users extends Authenticatable
             'fullname.required' => 'Please type full name',
             'email.required' => 'Please type E-Mail',
             'email.unique' => 'This E-Mail is already saved',
-            'rgid.required' => 'Please choose user rights group',
-            'company_id.required' => 'Please choose company',
+            'rgid.required' => 'Please choose user rights group'
         ];
     }
     public function Financialyears()
@@ -75,15 +73,16 @@ class Users extends Authenticatable
     }
 
     /**
-     * _getVoucher a new user.
+     * _getVoucher function.
      *
      * @param  $vrnoa
+     * @return array|bool
      */
     public static function _getVoucher(int $vrnoa)
     {
         $Financialyear = Users::find($vrnoa);
         if (count((array)($Financialyear)) > 0)
-            return CommonFunctions::_getReturnResponse(true, 'Financial Year Data', $Financialyear);
+            return CommonFunctions::_getReturnResponse(true, 'User Data', $Financialyear);
         else return CommonFunctions::_getReturnResponse(false, 'No Data Found', null);
     }
 
@@ -122,9 +121,9 @@ class Users extends Authenticatable
 
             if ($counter <= $number) {
                 $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
-                user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
+                user.uname, user.email, user.company_id, user.rgid, user.fullname, 
                 company.img as 'header_img',session_users.session_id as 'session_id',user.send_mail,
-                user.mobile, user.rgid, user.mob_code,rolegroups.desc,company.contact as company_contact
+                user.mobile, user.rgid, rolegroups.desc,company.contact as company_contact
                 FROM user
                 INNER JOIN rolegroups ON user.rgid = rolegroups.rgid
                 INNER JOIN company ON user.company_id = company.company_id
@@ -365,9 +364,9 @@ class Users extends Authenticatable
                 return CommonFunctions::_getReturnResponse(false, 'Your one time pin is expired', null);
             } else if ($result[0]['otp_uid'] == $user_id && $result[0]['otp_uname'] == $user_name) {
                 $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
-                user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
+                user.uname, user.email, user.company_id, user.rgid, user.fullname, 
                 company.img as 'header_img',session_users.session_id as 'session_id',
-                user.mobile, user.rgid, user.mob_code,rolegroups.desc,company.contact as company_contact
+                user.mobile, user.rgid, rolegroups.desc,company.contact as company_contact
                 FROM user
                 INNER JOIN rolegroups ON user.rgid = rolegroups.rgid
                 INNER JOIN company ON user.company_id = company.company_id
@@ -433,9 +432,9 @@ class Users extends Authenticatable
         $uid             = Session::get('before_session_userid');
         $uname             = Session::get('before_session_username');
         $q = "SELECT company.company_id, company.company_name,company.barcode_print, user.uid,
-                user.uname, user.email, user.company_id, user.user_type,user.rgid, user.fullname, 
+                user.uname, user.email, user.company_id, user.rgid, user.fullname, 
                 company.img as 'header_img',session_users.session_id as 'session_id',
-                user.mobile, user.rgid, user.mob_code,rolegroups.desc,company.contact as company_contact
+                user.mobile, user.rgid, rolegroups.desc,company.contact as company_contact
                 FROM user
                 INNER JOIN rolegroups ON user.rgid = rolegroups.rgid
                 INNER JOIN company ON user.company_id = company.company_id

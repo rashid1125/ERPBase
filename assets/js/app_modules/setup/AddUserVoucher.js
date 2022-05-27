@@ -284,10 +284,7 @@ var UserVoucher = function () {
                     },
                     rgid: {
                         required: true,
-                    },
-                    company_id: {
-                        required: true,
-                    },
+                    }
                 },
                 messages: {
                     uname: {
@@ -302,9 +299,6 @@ var UserVoucher = function () {
                     },
                     rgid: {
                         required: "Please enter rolegroup",
-                    },
-                    company_id: {
-                        required: "Please enter company",
                     }
                 },
                 errorElement: 'span',

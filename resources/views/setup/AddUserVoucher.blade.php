@@ -128,27 +128,6 @@
                                                                 <div class="row">
                                                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                                         <div class="form-group">
-                                                                            <label for="txtUserCompany">Company</label>
-                                                                            <span class="asterisk">&#42;</span>
-                                                                            <span
-                                                                                class="text-message-select2 txtCompany-dropdown-text-message"></span>
-                                                                            <div class="input-group">
-                                                                                <select
-                                                                                    class="form-control select2 reset-elem save-elem"
-                                                                                    name="company_id"
-                                                                                    id="txtUserCompany" disabled>
-                                                                                </select>
-                                                                                <div class="input-group-prepend"
-                                                                                    id="txtUserRefreshCompanydropdown">
-                                                                                    <span
-                                                                                        class="btn input-group-text"><i
-                                                                                            class="fas fa-sync-alt"></i></span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                                                        <div class="form-group">
                                                                             <label for="txtUserRoleGroup">User
                                                                                 Rights Group</label>
                                                                             <span class="asterisk">&#42;</span>
@@ -168,8 +147,6 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row">
                                                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                                         <div class="form-group">
                                                                             <label for="txtUserFinancialYear">Financial
@@ -193,6 +170,9 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    
                                                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                                         <div class="form-group">
                                                                             <label for="txtUserLevel3">Level3</label>
@@ -214,8 +194,6 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="row mt-2">
                                                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                                         <div class="form-group">
                                                                             <label for="txtUserReportToAdmin">Report
@@ -238,6 +216,9 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    
                                                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                                                         <div class="form-group">
                                                                             <label for="txtUserLevel3">Active?</label>

@@ -33,20 +33,8 @@ Route::post('getValidateUserOTPCode', 'WelcomeController@getValidateUserOTPCode'
 
 Route::get('user/logout', 'UserController@logOut');
 
-try {
-    $RouteDynamics =  RouteDynamics::all();
-    if (count($RouteDynamics) > 0)
-        foreach ($RouteDynamics as $key => $routedynamic) {
-            if ($routedynamic['function_method'] == 'get')
-                Route::get($routedynamic['slug'], $routedynamic['controller_name'] . '@' . $routedynamic['function_name']);
-            else if ($routedynamic['function_method'] == 'post')
-                Route::post($routedynamic['slug'], $routedynamic['controller_name'] . '@' . $routedynamic['function_name']);
-        }
-} catch (\Throwable $th) {
-    echo $th->getMessage() . PHP_EOL;
-}
-
-Route::get('/reset-password/{token}', 'ForgotPasswordController@showResetPasswordForm')->name('password.reset');
+// Reset Password
+Route::get('reset-password/{token}', 'ForgotPasswordController@showResetPasswordForm')->name('password.reset');
 Route::post('reset-password', 'ForgotPasswordController@submitResetPasswordForm')->name('password.update');
 
 // Financial Year Route
@@ -57,3 +45,18 @@ Route::post('financialyear/getVoucher', 'FinancialyearController@_getVoucher');
 Route::post('user/usersave', 'UserController@userSave');
 Route::post('user/update', 'UserController@userUpdate');
 Route::post('user/getVoucher', 'UserController@_getVoucher');
+
+// Route Dynamics this is creating route from database
+try {
+    $RouteDynamics =  RouteDynamics::all();
+    if (count($RouteDynamics) > 0)
+        foreach ($RouteDynamics as $key => $routedynamic) {
+            if ($routedynamic['function_method'] == 'get')
+                Route::get($routedynamic['slug'], $routedynamic['controller_name'] . '@' . $routedynamic['function_name'])->name($routedynamic['name']);
+            else if ($routedynamic['function_method'] == 'post')
+                Route::post($routedynamic['slug'], $routedynamic['controller_name'] . '@' . $routedynamic['function_name'])->name($routedynamic['name']);
+        }
+} catch (\Throwable $th) {
+    echo $th->getMessage() . PHP_EOL;
+}
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRouteDynamicsTable extends Migration
+class CreateLevel2 extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateRouteDynamicsTable extends Migration
      */
     public function up()
     {
-        Schema::create('route_dynamics', function (Blueprint $table) {
-            $table->id();
+        Schema::create('level2', function (Blueprint $table) {
+            $table->integer('l2')->autoIncrement();
             $table->string('name');
-            $table->string('slug');
-            $table->string('controller_name');
-            $table->string('function_name');
-            $table->string('function_method');
-            $table->string('content');
+            $table->string('l2_code');
+            $table->integer('l1');
+            $table->integer('uid');
+            $table->integer('company_id');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreateRouteDynamicsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('route_dynamics');
+        Schema::dropIfExists('level2');
     }
 }
